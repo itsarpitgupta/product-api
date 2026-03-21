@@ -1,18 +1,15 @@
-# Stage 1: Build the application
-FROM maven:3.9.6-eclipse-temurin-17-alpine AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN echo "version-v11" > build_version.txt
-RUN mvn clean package -DskipTests
+# Use the official OpenJDK 17 image (matching reference style)
+FROM public.ecr.aws/docker/library/openjdk:17
 
-# Stage 2: Run the application
-FROM eclipse-temurin:17-jre-alpine
+# Set working directory
 WORKDIR /app
-COPY --from=build /app/target/product-*.jar app.jar
 
-# Expose port (change if your app uses different port)
+# Copy the pre-built JAR from the target folder
+# This expects 'mvn clean package' to have run previously
+COPY target/product-0.0.1-SNAPSHOT.jar app.jar
+
+# Expose port
 EXPOSE 8080
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Command to run
+CMD ["java", "-jar", "app.jar"]
