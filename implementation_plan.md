@@ -30,10 +30,7 @@ graph TD
 ### 1. Docker and AWS ECR
 **Commands:**
 ```bash
-# Build JAR
-mvn clean package -DskipTests
-
-# Build Docker image
+# Build and Tag Docker image (Multi-stage build handles JAR creation)
 docker build -t product-api .
 
 # Authenticate with Amazon ECR
@@ -42,6 +39,13 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 # Tag and Push to ECR
 docker tag product-api:latest 606349122774.dkr.ecr.us-east-1.amazonaws.com/product-api:latest
 docker push 606349122774.dkr.ecr.us-east-1.amazonaws.com/product-api:latest
+```
+
+### 2. Redeploying Updates
+To apply code changes (like adding sample products):
+```bash
+# Force a new deployment to pull the latest image
+aws ecs update-service --cluster product-api-cluster --service product-api-service --force-new-deployment
 ```
 
 ### 2. AWS ECS Free Tier Infrastructure (EC2)
