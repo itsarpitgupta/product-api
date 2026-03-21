@@ -36,15 +36,16 @@ public class ProductService {
         createProduct(new Product(null, "USB Hub", "7-in-1 USB-C adapter", 50.0));
         createProduct(new Product(null, "Power Bank", "20000mAh fast charge battery", 40.0));
         createProduct(new Product(null, "VR Headset", "All-in-one virtual reality system", 400.0));
+        createProduct(new Product(null, "Test Product", "Test Product", 10000000.0));
     }
 
     public List<Product> getAllProducts() {
         return products;
     }
 
-    public Optional<Product> getProductById(Long id) {
-        return products.stream()
-            .filter(product -> product.getId().equals(id))
+    public Optional<Product> get
+                rn products.stream()
+                .filter(product -> product.getId().equals(id))
             .findFirst();
     }
 
