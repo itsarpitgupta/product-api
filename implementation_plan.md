@@ -5,24 +5,26 @@ This plan details the steps to build, push, and deploy the `product-api` contain
 ## Deployment Flow Diagram
 
 ```mermaid
-graph TD
-    A[Java Source Code] -->|mvn clean package| B(JAR File)
-    B -->|docker build| C[Local Docker Image]
-    C -->|aws ecr get-login & docker push| D[(Amazon ECR Repository)]
-    
-    subgraph AWS Cloud
-        D
-        E[ECS Cluster]
-        F[EC2 t2.micro Instance]
-        G[ECS Task]
-        
-        E -->|manages| F
-        E -->|runs| G
-        G -->|pulls image| D
-        G -->|runs on| F
+flowchart TD
+    subgraph Local ["Local Development"]
+        A[Java Source Code] -->|mvn build| B(Exec JAR)
+        B -->|docker build| C[[Local Docker Image]]
     end
+
+    subgraph Cloud ["AWS Cloud (us-east-1)"]
+        D[(Amazon ECR Repo)]
+        
+        subgraph Cluster ["ECS Cluster (EC2)"]
+            F[t3.micro Instance]
+            G{{Product-API Task}}
+        end
+    end
+
+    C -->|docker push| D
+    D -.->|pull image| G
+    G ---|host port 8080| F
     
-    H[User Browser] -->|HTTP:8080| F
+    User((User Access)) ==>|HTTP:8080| F
 ```
 
 ## Proposed Changes & Commands
