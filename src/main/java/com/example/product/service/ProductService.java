@@ -43,9 +43,9 @@ public class ProductService {
         return products;
     }
 
-    public Optional<Product> get
-                rn products.stream()
-                .filter(product -> product.getId().equals(id))
+    public Optional<Product> getProductById(Long id) {
+        return products.stream()
+            .filter(product -> product.getId().equals(id))
             .findFirst();
     }
 
