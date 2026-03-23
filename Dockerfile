@@ -1,5 +1,5 @@
 # Use the official OpenJDK 17 image (matching reference style)
-FROM amazoncorretto:17
+FROM public.ecr.aws/amazoncorretto/amazoncorretto:17
 
 # Set working directory
 WORKDIR /app
