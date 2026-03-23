@@ -7,7 +7,7 @@ phases:
       - mvn clean install -DskipTests
       - echo "Logging in to Amazon ECR..."
       - aws --version
-      - REPOSITORY_URI=606349122774.dkr.ecr.us-east-1.amazonaws.com/product-api
+      - REPOSITORY_URI=606349122774.dkr.ecr.us-east-1.amazonaws.com/product-api-repo
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
@@ -27,8 +27,14 @@ phases:
       # Note: "product-api" must match the name in your ECS Task Definition
       - printf '[{"name":"product-api","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo "Printing imagedefinitions.json content:"
+      # add your container name here
+      - DOCKER_CONTAINER_NAME=product-api-repo
+      - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - echo $DOCKER_CONTAINER_NAME
+      - echo printing imagedefinitions.json
       - cat imagedefinitions.json
 
 artifacts:
   files:
     - imagedefinitions.json
+    - target/product-0.0.1-SNAPSHOT.jar
