@@ -1,5 +1,5 @@
 # Use the official OpenJDK 17 image (matching reference style)
-FROM openjdk:17
+FROM amazoncorretto:17
 
 # Set working directory
 WORKDIR /app
