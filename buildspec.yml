@@ -28,7 +28,7 @@ phases:
       - printf '[{"name":"product-api","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo "Printing imagedefinitions.json content:"
       # add your container name here
-      - DOCKER_CONTAINER_NAME=product-api-repo
+      - DOCKER_CONTAINER_NAME=product-api
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo $DOCKER_CONTAINER_NAME
       - echo printing imagedefinitions.json
