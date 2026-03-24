@@ -7,16 +7,19 @@ phases:
       - mvn clean install -DskipTests
       - echo "Logging in to Amazon ECR..."
       - aws --version
-      - REPOSITORY_URI=606349122774.dkr.ecr.us-east-1.amazonaws.com/product-api  # Change this to match your ECR repo name
+      - REPOSITORY_URI=606349122774.dkr.ecr.us-east-1.amazonaws.com/product-api
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - DOCKER_CONTAINER_NAME=product-api  # Moved this to pre_build for consistency
+      
   build:
     commands:
       - echo "Build started on $(date)"
       - echo "Building the Docker image..."
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      
   post_build:
     commands:
       - echo "Build completed on $(date)"
@@ -24,14 +27,9 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo "Writing image definitions file..."
-      # Note: "product-api" must match the name in your ECS Task Definition
-      - printf '[{"name":"product-api","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-      - echo "Printing imagedefinitions.json content:"
-      # add your container name here
-      - DOCKER_CONTAINER_NAME=product-api
+      # Removed the duplicate printf and kept only the correct one
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-      - echo $DOCKER_CONTAINER_NAME
-      - echo printing imagedefinitions.json
+      - echo "Printing imagedefinitions.json content:"
       - cat imagedefinitions.json
 
 artifacts:
