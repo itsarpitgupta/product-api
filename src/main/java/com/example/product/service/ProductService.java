@@ -20,7 +20,7 @@ public class ProductService {
         products.add(new Product(2L, "Smartphone", "Latest model smartphone", 800.0));
         products.add(new Product(3L, "Headphones", "Noise-cancelling headphones", 200.0));
         products.add(new Product(4L, "Smartwatch", "Waterproof fitness tracker", 150.0));
-        products.add(new Product(5L, "Gaming Mouse", "RGB lighted gaming mouse", 60.0));
+        products.add(new Product(5L, "Gaming Mouse", "RGB lighted gaming mouse", 6000.0));
         // Reset counter so new products created via API start from 26
         counter.set(5);
     }
